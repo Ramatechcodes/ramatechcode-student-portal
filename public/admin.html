@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard</title>
+
+<style>
+
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Arial;
+    padding:20px;
+}
+
+h1{
+    color:gold;
+    margin-bottom:20px;
+}
+
+.student{
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+}
+
+button{
+    background:gold;
+    color:black;
+    border:none;
+    padding:10px 15px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:white;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<div id="students"></div>
+
+<script>
+
+async function loadStudents(){
+
+    const res = await fetch("/students");
+
+    const students = await res.json();
+
+    let html = "";
+
+    students.forEach(student=>{
+
+        html += `
+
+        <div class="student">
+
+            <h2>${student.fullName}</h2>
+
+            <p><b>Student ID:</b>
+            ${student.studentId}</p>
+
+            <p><b>Career:</b>
+            ${student.career}</p>
+
+            <p><b>Payment:</b>
+            ${student.paymentStatus}</p>
+
+            <p><b>ID Card:</b>
+            ${student.idCardStatus || "Not Applied"}</p>
+
+            <button onclick="approve('${student.id}')">
+                Approve ID Card
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById("students").innerHTML = html;
+
+}
+
+async function approve(id){
+
+    await fetch("/approve-id",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({ id })
+
+    });
+
+    alert("ID Card Approved");
+
+    loadStudents();
+
+}
+
+loadStudents();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ramatechcode Student Portal</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+}
+
+/* HEADER */
+
+header{
+    background:#020617;
+    padding:20px;
+    text-align:center;
+    border-bottom:2px solid gold;
+}
+
+header h1{
+    color:gold;
+}
+
+/* CONTAINER */
+
+.container{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+/* FORM */
+
+.form-box{
+    background:#1e293b;
+    padding:30px;
+    border-radius:15px;
+}
+
+.form-box h2{
+    text-align:center;
+    margin-bottom:25px;
+    color:gold;
+}
+
+form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+input,
+select,
+textarea{
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    outline:none;
+}
+
+textarea{
+    resize:none;
+    height:100px;
+}
+
+button{
+    background:gold;
+    color:black;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:white;
+}
+
+/* FEATURES */
+
+.features{
+    margin-top:50px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.card h3{
+    color:gold;
+    margin-bottom:10px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .container{
+        width:95%;
+    }
+
+}
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Ramatechcode Student Portal</h1>
+</header>
+
+<div class="container">
+
+    <div class="form-box">
+
+        <h2>Student Registration</h2>
+
+        <form id="registerForm">
+
+            <input type="text" id="fullName" placeholder="Full Name" required>
+
+            <input type="date" id="dob" required>
+
+            <input type="email" id="email" placeholder="Gmail Address" required>
+
+            <input type="text" id="phone" placeholder="Phone Number" required>
+
+            <select id="gender">
+                <option value="">Select Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+            </select>
+
+            <textarea id="address" placeholder="Full Address"></textarea>
+
+            <select id="career">
+
+                <option>Frontend Development</option>
+                <option>Backend Development</option>
+                <option>Fullstack Development</option>
+                <option>Cybersecurity</option>
+                <option>UI/UX Design</option>
+                <option>AI Automation</option>
+                <option>Python Programming</option>
+                <option>Graphics Design</option>
+                <option>Data Analysis</option>
+
+            </select>
+
+            <select id="classType">
+                <option>Physical</option>
+                <option>Virtual</option>
+            </select>
+
+            <input type="text" id="guardianName" placeholder="Parent/Guardian Name">
+
+            <input type="text" id="guardianPhone" placeholder="Parent Phone Number">
+
+            <textarea id="guardianAddress" placeholder="Parent Address"></textarea>
+
+           
+
+            <button type="submit">
+                Register & Pay ₦10,000
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="features">
+
+        <div class="card">
+            <h3>Student Dashboard</h3>
+            <p>Track payment and course progress.</p>
+            <h2>Student Login</h2>
+
+<input type="text" id="studentId" placeholder="Enter Student ID">
+
+<button onclick="login()">Login</button>
+
+        </div>
+
+        <div class="card">
+            <h3>ID Card</h3>
+            <p>Apply for student ID card online.</p>
+        </div>
+
+        <div class="card">
+            <h3>Virtual Classes</h3>
+            <p>Join online tech classes easily.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const form = document.getElementById("registerForm");
+
+form.addEventListener("submit", async (e)=>{
+
+    e.preventDefault();
+
+    const data = {
+
+    fullName:document.getElementById("fullName").value,
+    dob:document.getElementById("dob").value,
+    email:document.getElementById("email").value,
+    phone:document.getElementById("phone").value,
+    gender:document.getElementById("gender").value,
+    address:document.getElementById("address").value,
+    career:document.getElementById("career").value,
+    classType:document.getElementById("classType").value,
+    guardianName:document.getElementById("guardianName").value,
+    guardianPhone:document.getElementById("guardianPhone").value,
+    guardianAddress:document.getElementById("guardianAddress").value
+
+};
+
+    try{
+
+        const response = await fetch("/register",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify(data)
+
+        });
+
+        const result = await response.json();
+
+        if(result.success){
+
+    alert("Registration successful. Redirecting to payment...");
+
+   window.location.href = result.paymentLink;
+
+        }else{
+
+            alert(result.message);
+
+        }
+
+    }catch(error){
+
+        console.log(error);
+
+        alert("Something went wrong");
+
+    }
+
+});
+
+async function login(){
+
+  const studentId = document.getElementById("studentId").value;
+
+  const res = await fetch("/login",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ studentId })
+  });
+
+  const data = await res.json();
+
+  if(data.success){
+    localStorage.setItem("student", JSON.stringify(data.student));
+    window.location.href = "/dashboard.html";
+  } else {
+    alert("Invalid ID");
+  }
+
+}
+</script>
+
+</body>
+</html>
