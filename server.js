@@ -67,7 +67,7 @@ app.post("/register", async (req, res) => {
         currency: "NGN",
 
         redirect_url:
-          "http://localhost:5000/payment-success",
+          "https://ramatechcode-student-portal.onrender.com/payment-success",
 
         customer: {
           email: data.email,
@@ -257,7 +257,7 @@ app.post("/pay-course", async (req,res)=>{
         currency:"NGN",
 
         redirect_url:
-        "http://localhost:5000/payment-success",
+        "https://ramatechcode-student-portal.onrender.com/payment-success",
 
         customer:{
           email:student.email,
