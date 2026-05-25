@@ -472,6 +472,49 @@ const doc = await db.collection("settings")
 res.json(doc.data());
 
 });
+app.post("/add-assignment", async(req,res)=>{
+
+try{
+
+const { title, details } = req.body;
+
+await db.collection("assignments").add({
+
+title,
+details,
+createdAt: Date.now()
+
+});
+
+res.json({
+success:true
+});
+
+}catch(err){
+
+res.json({
+success:false
+});
+
+}
+
+});
+app.get("/assignments", async(req,res)=>{
+
+const snapshot =
+await db.collection("assignments").get();
+
+let assignments = [];
+
+snapshot.forEach(doc=>{
+
+assignments.push(doc.data());
+
+});
+
+res.json(assignments);
+
+});
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, ()=>{
