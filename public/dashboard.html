@@ -465,6 +465,32 @@ Authorized Signature
 `;
 
 }
+    
+async function loadClassLink(){
+
+const res = await fetch("/class-link");
+
+const data = await res.json();
+
+if(data.liveClassLink){
+
+document.getElementById("liveClass").innerHTML = `
+
+<a href="${data.liveClassLink}" target="_blank">
+
+<button>
+Join Live Class
+</button>
+
+</a>
+
+`;
+
+}
+
+}
+
+loadClassLink();
 </script>
 
 </body>
