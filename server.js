@@ -21,6 +21,21 @@ function generateStudentId(number){
     return `RAM32-${year}-${String(number).padStart(3,"0")}`;
 
 }
+function verifyAdmin(req,res,next){
+
+const pin = req.headers.pin;
+
+if(pin !== process.env.ADMIN_PIN){
+
+return res.status(401).json({
+message:"Unauthorized"
+});
+
+}
+
+next();
+
+}
 
 /* EMAIL */
 
