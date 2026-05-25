@@ -263,57 +263,6 @@ ID Card Approved - Ready To Print
 
 loadStudent();
 
-document.getElementById("profile").innerHTML = `
-
-<p><b>Name:</b> ${student.fullName}</p>
-
-<p><b>Student ID:</b> ${student.studentId}</p>
-
-<p><b>Career:</b> ${student.career}</p>
-
-<p><b>Registration Fee:</b> ${student.paymentStatus}</p>
-
-`;
-
-if(student.coursePayment){
-
-document.getElementById("paymentHistory").innerHTML = `
-
-<div class="status approved">
-
-Course Payment:
-${student.coursePayment.percentage}
-Paid Successfully
-
-</div>
-
-`;
-
-}
-
-if(student.idCardStatus === "pending"){
-
-document.getElementById("idStatus").innerHTML = `
-
-<div class="status pending">
-ID Card Pending Approval
-</div>
-
-`;
-
-}
-
-if(student.idCardStatus === "approved"){
-
-document.getElementById("idStatus").innerHTML = `
-
-<div class="status approved">
-ID Card Approved
-</div>
-
-`;
-
-}
 
 async function payCourse(){
 
