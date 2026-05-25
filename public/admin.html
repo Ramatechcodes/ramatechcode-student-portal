@@ -79,9 +79,15 @@ async function loadStudents(){
             <p><b>ID Card:</b>
             ${student.idCardStatus || "Not Applied"}</p>
 
-            <button onclick="approve('${student.id}')">
-                Approve ID Card
-            </button>
+            ${
+student.idCardStatus === "approved"
+?
+`<button disabled>Approved</button>`
+:
+`<button onclick="approve('${student.id}')">
+Approve ID Card
+</button>`
+}
 
         </div>
 
