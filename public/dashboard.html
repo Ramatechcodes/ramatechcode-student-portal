@@ -471,75 +471,99 @@ ${status.toUpperCase()}
 </span>
 
 </p>
+<!-- STUDENT SIGNATURE -->
+
+<div style="text-align:center;">
+
+<div style="
+width:120px;
+height:60px;
+border-bottom:2px solid black;
+margin:auto;
+"></div>
+
+<hr style="width:120px;">
+
+<p style="
+font-size:13px;
+font-weight:bold;
+">
+Student Signature
+</p>
 
 </div>
 
 <div class="id-back">
 
-<h3>Ramatechcode Lab Technology</h3>
+<h3 style="margin-bottom:10px;">
+Ramatechcode Lab Technology
+</h3>
 
-<p>
-This card remains property of
+<p style="margin-bottom:10px;">
+This ID card remains the property of
 Ramatechcode Lab Technology.
 </p>
 
-<p>
-If found kindly return to management.
+<p style="margin-bottom:10px;">
+If found, kindly return it to the nearest
+Ramatechcode office or the nearest police station.
+</p>
+
+<p style="margin-bottom:20px;">
+Unauthorized use of this card is prohibited.
 </p>
 
 <div style="
 margin-top:30px;
 display:flex;
 justify-content:space-between;
+align-items:flex-end;
 gap:20px;
 ">
+
+<!-- COMPANY SIGNATURE -->
 
 <div style="text-align:center;">
 
 <img
-src="images/public/IMG_1057.jpeg"
+src="/images/IMG_1057.jpeg"
 style="
 width:120px;
 height:60px;
 object-fit:contain;
+display:block;
+margin:auto;
 "
 />
 
-<hr>
+<hr style="width:120px;">
 
-<p style="font-size:13px;">
+<p style="
+font-size:13px;
+font-weight:bold;
+">
 Authorized Signature
 </p>
 
 </div>
 
+<!-- STUDENT SIGNATURE -->
+
 <div style="text-align:center;">
 
-${
-student.signature
-?
-
-`<img
-src="${student.signature}"
-style="
-width:120px;
-height:60px;
-object-fit:contain;
-"
-/>`
-
-:
-
-`<div style="
+<div style="
 width:120px;
 height:60px;
 border-bottom:2px solid black;
-"></div>`
-}
+margin:auto;
+"></div>
 
-<hr>
+<hr style="width:120px;">
 
-<p style="font-size:13px;">
+<p style="
+font-size:13px;
+font-weight:bold;
+">
 Student Signature
 </p>
 
@@ -548,9 +572,6 @@ Student Signature
 </div>
 
 </div>
-
-</div>
-
 `;
 
 }
