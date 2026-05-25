@@ -116,7 +116,14 @@ margin-top:10px;
 Upload Assignment
 </button>
 
-</div>  
+</div> 
+    <div class="student">
+
+<h2>All Assignments</h2>
+
+<div id="allAssignments"></div>
+
+</div>
 <div id="students"></div>
 
 <script>
@@ -253,6 +260,14 @@ document.getElementById("assignmentTitle").value;
 const details =
 document.getElementById("assignmentDetails").value;
 
+if(!title || !details){
+
+alert("Fill all fields");
+
+return;
+
+}
+
 const res = await fetch("/add-assignment",{
 
 method:"POST",
@@ -275,9 +290,83 @@ if(data.success){
 
 alert("Assignment Uploaded");
 
+document.getElementById("assignmentTitle").value = "";
+document.getElementById("assignmentDetails").value = "";
+
+loadAssignmentsAdmin();
+
 }else{
 
 alert("Upload Failed");
+
+}
+
+}
+    async function loadAssignmentsAdmin(){
+
+const res = await fetch("/assignments");
+
+const assignments = await res.json();
+
+let html = "";
+
+assignments.forEach(item=>{
+
+html += `
+
+<div class="student">
+
+<h3>${item.title}</h3>
+
+<p>${item.details}</p>
+
+<button
+onclick="deleteAssignment('${item.id}')"
+style="background:red;color:white;"
+>
+Delete Assignment
+</button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("allAssignments").innerHTML = html;
+
+}
+    async function deleteAssignment(id){
+
+const confirmDelete =
+confirm("Delete this assignment?");
+
+if(!confirmDelete) return;
+
+const res = await fetch("/delete-assignment",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json",
+pin: adminPin
+},
+
+body:JSON.stringify({ id })
+
+});
+
+const data = await res.json();
+
+if(data.success){
+
+alert("Assignment Deleted");
+
+loadAssignmentsAdmin();
+
+}else{
+
+alert("Delete Failed");
 
 }
 
@@ -339,6 +428,7 @@ function searchStudent(){
 }
 
 loadStudents();
+    loadAssignmentsAdmin();
 
 </script>
 
