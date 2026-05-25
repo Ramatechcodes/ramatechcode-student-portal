@@ -185,9 +185,23 @@ Join WhatsApp Group
     <div id="preview"></div>
 
 </div>
+<div class="card">
+
+<h2>Live Video Class</h2>
+
+<button onclick="joinLiveClass()">
+Join Live Class
+</button>
 
 </div>
+</div>
+<div class="card">
 
+<h2>Assignments</h2>
+
+<div id="assignments"></div>
+
+</div>
 <script>
 
 let student;
@@ -275,6 +289,55 @@ return;
 }
 
 window.open(link,"_blank");
+
+}
+    async function loadAssignments(){
+
+const res =
+await fetch("/assignments");
+
+const data = await res.json();
+
+let html = "";
+
+data.forEach(item=>{
+
+html += `
+
+<div class="status pending">
+
+<h3>${item.title}</h3>
+
+<p>${item.details}</p>
+
+</div>
+
+`;
+
+});
+
+document.getElementById(
+"assignments"
+).innerHTML = html;
+
+}
+
+loadAssignments();
+    async function joinLiveClass(){
+
+const res = await fetch("/class-link");
+
+const data = await res.json();
+
+if(data.liveClassLink){
+
+window.open(data.liveClassLink,"_blank");
+
+}else{
+
+alert("No live class currently");
+
+}
 
 }
 async function applyId(){
