@@ -487,9 +487,65 @@ Ramatechcode Lab Technology.
 If found kindly return to management.
 </p>
 
-<p>
+<div style="
+margin-top:30px;
+display:flex;
+justify-content:space-between;
+gap:20px;
+">
+
+<div style="text-align:center;">
+
+<img
+src="images/company-signature.png"
+style="
+width:120px;
+height:60px;
+object-fit:contain;
+"
+/>
+
+<hr>
+
+<p style="font-size:13px;">
 Authorized Signature
 </p>
+
+</div>
+
+<div style="text-align:center;">
+
+${
+student.signature
+?
+
+`<img
+src="${student.signature}"
+style="
+width:120px;
+height:60px;
+object-fit:contain;
+"
+/>`
+
+:
+
+`<div style="
+width:120px;
+height:60px;
+border-bottom:2px solid black;
+"></div>`
+}
+
+<hr>
+
+<p style="font-size:13px;">
+Student Signature
+</p>
+
+</div>
+
+</div>
 
 </div>
 
