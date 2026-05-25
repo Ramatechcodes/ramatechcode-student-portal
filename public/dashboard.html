@@ -274,7 +274,15 @@ if(student.idCardStatus === "approved"){
 document.getElementById("idStatus").innerHTML = `
 
 <div class="status approved">
+
+<p>
 ID Card Approved - Ready To Print
+</p>
+
+<button onclick="printIdCard()">
+Click Here To Print
+</button>
+
 </div>
 
 `;
@@ -490,7 +498,95 @@ Authorized Signature
 `;
 
 }
-    
+ function printIdCard(){
+
+previewCard();
+
+const printContents =
+document.getElementById("preview").innerHTML;
+
+const newWindow = window.open("", "", "width=400,height=700");
+
+newWindow.document.write(`
+
+<html>
+
+<head>
+
+<title>Print ID Card</title>
+
+<style>
+
+body{
+font-family:Arial;
+padding:20px;
+background:white;
+}
+
+.id-card{
+width:320px;
+margin:auto;
+background:white;
+color:black;
+border-radius:15px;
+overflow:hidden;
+border:2px solid #000;
+}
+
+.id-top{
+background:#020617;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+.id-top h2{
+color:gold;
+}
+
+.id-body{
+padding:20px;
+}
+
+.id-back{
+background:#e2e8f0;
+padding:20px;
+}
+
+img{
+width:90px;
+height:90px;
+border-radius:50%;
+border:3px solid gold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+${printContents}
+
+<script>
+
+window.onload = function(){
+
+window.print();
+
+}
+
+<\/script>
+
+</body>
+
+</html>
+
+`);
+
+newWindow.document.close();
+
+}   
 async function loadClassLink(){
 
 const res = await fetch("/class-link");
