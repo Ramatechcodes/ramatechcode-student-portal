@@ -46,35 +46,85 @@ button:hover{
 <body>
 
 <h1>Admin Dashboard</h1>
-
+<input
+type="text"
+id="search"
+placeholder="Search student..."
+onkeyup="searchStudent()"
+style="
+width:100%;
+padding:15px;
+border:none;
+border-radius:10px;
+margin-bottom:20px;
+"
+/>
 <div id="students"></div>
 
 <script>
 
-async function loadStudents(){
+const adminPin = prompt("Enter Admin PIN");
 
-    const res = await fetch("/students");
+async function loadStudents(search=""){
+
+    const res = await fetch("/students",{
+
+        headers:{
+            pin: adminPin
+        }
+
+    });
 
     const students = await res.json();
 
     let html = "";
 
-    students.forEach(student=>{
+    const filtered = students.filter(student => {
+
+        const name =
+        (student.fullName || "").toLowerCase();
+
+        const id =
+        (student.studentId || "").toLowerCase();
+
+        return (
+            name.includes(search.toLowerCase()) ||
+            id.includes(search.toLowerCase())
+        );
+
+    });
+
+    filtered.forEach(student=>{
 
         html += `
 
         <div class="student">
 
-            <h2>${student.fullName}</h2>
+            <h2>${student.fullName || "No Name"}</h2>
 
             <p><b>Student ID:</b>
-            ${student.studentId}</p>
+            ${student.studentId || "N/A"}</p>
+
+            <p><b>Email:</b>
+            ${student.email || "N/A"}</p>
+
+            <p><b>Phone:</b>
+            ${student.phone || "N/A"}</p>
+
+            <p><b>Gender:</b>
+            ${student.gender || "N/A"}</p>
 
             <p><b>Career:</b>
-            ${student.career}</p>
+            ${student.career || "N/A"}</p>
+
+            <p><b>Class Type:</b>
+            ${student.classType || "N/A"}</p>
+
+            <p><b>Address:</b>
+            ${student.address || "N/A"}</p>
 
             <p><b>Payment:</b>
-            ${student.paymentStatus}</p>
+            ${student.paymentStatus || "pending"}</p>
 
             <p><b>ID Card:</b>
             ${student.idCardStatus || "Not Applied"}</p>
@@ -88,6 +138,13 @@ student.idCardStatus === "approved"
 Approve ID Card
 </button>`
 }
+
+<button
+onclick="deleteStudent('${student.id}')"
+style="background:red;color:white;margin-left:10px;"
+>
+Delete
+</button>
 
         </div>
 
@@ -106,7 +163,8 @@ async function approve(id){
         method:"POST",
 
         headers:{
-            "Content-Type":"application/json"
+            "Content-Type":"application/json",
+            pin: adminPin
         },
 
         body:JSON.stringify({ id })
@@ -116,6 +174,41 @@ async function approve(id){
     alert("ID Card Approved");
 
     loadStudents();
+
+}
+
+async function deleteStudent(id){
+
+    const confirmDelete =
+    confirm("Delete this student?");
+
+    if(!confirmDelete) return;
+
+    await fetch("/delete-student",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json",
+            pin: adminPin
+        },
+
+        body:JSON.stringify({ id })
+
+    });
+
+    alert("Student Deleted");
+
+    loadStudents();
+
+}
+
+function searchStudent(){
+
+    const value =
+    document.getElementById("search").value;
+
+    loadStudents(value);
 
 }
 
