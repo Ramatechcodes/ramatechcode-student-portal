@@ -239,6 +239,30 @@ if(tx_ref.startsWith("COURSE-")){
   }
 
 });
+app.post("/delete-student", verifyAdmin, async(req,res)=>{
+
+try{
+
+const { id } = req.body;
+
+await db.collection("students")
+.doc(id)
+.delete();
+
+res.json({
+success:true
+});
+
+}catch(err){
+
+res.json({
+success:false
+});
+
+}
+
+});
+
 app.post("/pay-course", async (req,res)=>{
 
   try{
@@ -421,35 +445,37 @@ app.get("/success",(req,res)=>{
 
 app.get("/students", verifyAdmin, async(req,res)=>{
 
-    try{
+try{
 
-        const snapshot = await db.collection("students").get();
+const snapshot =
+await db.collection("students").get();
 
-        let students = [];
+let students = [];
 
-        snapshot.forEach(doc=>{
+snapshot.forEach(doc=>{
 
-            const data = doc.data();
+const data = doc.data();
 
-            // ONLY student portal users
-            if(data.studentId){
+if(data.studentId){
 
-                students.push({
-                    id: doc.id,
-                    ...data
-                });
+students.push({
+id: doc.id,
+...data
+});
 
-            }
+}
 
-        });
+});
 
-        res.json(students);
+res.json(students);
 
-    }catch(error){
+}catch(error){
 
-        res.json(error);
+res.json({
+success:false
+});
 
-    }
+}
 
 });
 
