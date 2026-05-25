@@ -384,7 +384,7 @@ app.post("/student-data", async(req,res)=>{
   }
 
 });
-app.post("/approve-id", async (req, res) => {
+app.post("/approve-id", verifyAdmin, async(req,res)=>{
 
   const { id } = req.body;
 
@@ -419,7 +419,7 @@ app.get("/success",(req,res)=>{
 
 /* ADMIN */
 
-app.get("/students", async(req,res)=>{
+app.get("/students", verifyAdmin, async(req,res)=>{
 
     try{
 
@@ -453,7 +453,7 @@ app.get("/students", async(req,res)=>{
 
 });
 
-app.post("/update-class-link", async(req,res)=>{
+app.post("/update-class-link", verifyAdmin, async(req,res)=>{
 
 try{
 
@@ -487,7 +487,7 @@ const doc = await db.collection("settings")
 res.json(doc.data());
 
 });
-app.post("/add-assignment", async(req,res)=>{
+app.post("/add-assignment", verifyAdmin, async(req,res)=>{
 
 try{
 
