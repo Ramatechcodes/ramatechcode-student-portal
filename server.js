@@ -414,12 +414,17 @@ app.get("/students", async(req,res)=>{
 
         snapshot.forEach(doc=>{
 
-            students.push({
+            const data = doc.data();
 
-                id:doc.id,
-                ...doc.data()
+            // ONLY student portal users
+            if(data.studentId){
 
-            });
+                students.push({
+                    id: doc.id,
+                    ...data
+                });
+
+            }
 
         });
 
