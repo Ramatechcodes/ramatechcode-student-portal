@@ -189,9 +189,7 @@ Join WhatsApp Group
 
 <h2>Live Video Class</h2>
 
-<button onclick="joinLiveClass()">
-Join Live Class
-</button>
+<div id="liveClass"></div>
 
 </div>
 </div>
@@ -236,13 +234,26 @@ JSON.stringify(student)
 
 document.getElementById("profile").innerHTML = `
 
-<p><b>Name:</b> ${student.fullName}</p>
+<p><b>Name:</b>
+${student.fullName || student.fullname || "N/A"}</p>
 
-<p><b>Student ID:</b> ${student.studentId}</p>
+<p><b>Student ID:</b>
+${student.studentId || "N/A"}</p>
 
-<p><b>Career:</b> ${student.career}</p>
+<p><b>Email:</b>
+${student.email || "N/A"}</p>
 
-<p><b>Registration Fee:</b> ${student.paymentStatus}</p>
+<p><b>Phone:</b>
+${student.phone || "N/A"}</p>
+
+<p><b>Gender:</b>
+${student.gender || "N/A"}</p>
+
+<p><b>Career:</b>
+${student.career || student.interest || "N/A"}</p>
+
+<p><b>Class Type:</b>
+${student.classType || student.classOption || "N/A"}</p>
 
 `;
 
@@ -342,6 +353,14 @@ alert("No live class currently");
 }
 async function applyId(){
 
+if(!student){
+
+alert("Student data not loaded");
+
+return;
+
+}
+
 const res = await fetch("/apply-id",{
 
 method:"POST",
@@ -351,30 +370,36 @@ headers:{
 },
 
 body:JSON.stringify({
-
-studentId:student.studentId
-
+studentId: student.studentId
 })
 
 });
 
 const data = await res.json();
+
 if(data.success){
 
-    student.idCardStatus = "pending";
+student.idCardStatus = "pending";
 
-    localStorage.setItem(
-      "student",
-      JSON.stringify(student)
-    );
+localStorage.setItem(
+"student",
+JSON.stringify(student)
+);
 
-    document.getElementById("idStatus").innerHTML = `
-        <div class="status pending">
-            Pending Approval
-        </div>
-    `;
+document.getElementById("idStatus").innerHTML = `
 
-    alert("ID Card Application Submitted");
+<div class="status pending">
+ID Card Pending Approval
+</div>
+
+`;
+
+alert("ID Card Application Submitted");
+
+}else{
+
+alert("Application Failed");
+
 }
 
 }
@@ -412,16 +437,16 @@ border:3px solid gold;
 </div>
 
 <p><b>Full Name:</b>
-${student.fullName}</p>
+${student.fullName || student.fullname}</p>
 
 <p><b>Student ID:</b>
 ${student.studentId}</p>
 
 <p><b>Course:</b>
-${student.career}</p>
+${student.career || student.interest}</p>
 
 <p><b>Class Type:</b>
-${student.classType}</p>
+${student.classType || student.classOption}</p>
 
 <p>
 <b>Status:</b>
