@@ -59,6 +59,64 @@ border-radius:10px;
 margin-bottom:20px;
 "
 />
+  <div class="student">
+
+<h2>Live Class Link</h2>
+
+<input
+type="text"
+id="classLink"
+placeholder="Paste Zoom or Google Meet link"
+style="
+width:100%;
+padding:15px;
+border:none;
+border-radius:10px;
+margin-top:10px;
+"
+/>
+
+<button onclick="saveClassLink()">
+Save Live Class Link
+</button>
+
+</div>
+
+<div class="student">
+
+<h2>Add Assignment</h2>
+
+<input
+type="text"
+id="assignmentTitle"
+placeholder="Assignment Title"
+style="
+width:100%;
+padding:15px;
+border:none;
+border-radius:10px;
+margin-top:10px;
+"
+/>
+
+<textarea
+id="assignmentDetails"
+placeholder="Assignment Details"
+style="
+width:100%;
+padding:15px;
+height:120px;
+border:none;
+border-radius:10px;
+margin-top:10px;
+"
+></textarea>
+
+<button onclick="addAssignment()">
+Upload Assignment
+</button>
+
+</div>  
 <div id="students"></div>
 
 <script>
@@ -100,7 +158,7 @@ async function loadStudents(search=""){
 
         <div class="student">
 
-            <h2>${student.fullName || "No Name"}</h2>
+            <h2>${student.fullName || student.fullname || "No Name"}</h2>
 
             <p><b>Student ID:</b>
             ${student.studentId || "N/A"}</p>
@@ -115,10 +173,10 @@ async function loadStudents(search=""){
             ${student.gender || "N/A"}</p>
 
             <p><b>Career:</b>
-            ${student.career || "N/A"}</p>
+            ${student.career || student.interest || "N/A"}</p>
 
             <p><b>Class Type:</b>
-            ${student.classType || "N/A"}</p>
+            ${student.classType || student.classOption || "N/A"}</p>
 
             <p><b>Address:</b>
             ${student.address || "N/A"}</p>
@@ -153,6 +211,75 @@ Delete
     });
 
     document.getElementById("students").innerHTML = html;
+
+}
+    async function saveClassLink(){
+
+const link =
+document.getElementById("classLink").value;
+
+const res = await fetch("/update-class-link",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json",
+pin: adminPin
+},
+
+body:JSON.stringify({ link })
+
+});
+
+const data = await res.json();
+
+if(data.success){
+
+alert("Live Class Link Updated");
+
+}else{
+
+alert("Failed");
+
+}
+
+}
+
+async function addAssignment(){
+
+const title =
+document.getElementById("assignmentTitle").value;
+
+const details =
+document.getElementById("assignmentDetails").value;
+
+const res = await fetch("/add-assignment",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json",
+pin: adminPin
+},
+
+body:JSON.stringify({
+title,
+details
+})
+
+});
+
+const data = await res.json();
+
+if(data.success){
+
+alert("Assignment Uploaded");
+
+}else{
+
+alert("Upload Failed");
+
+}
 
 }
 async function approve(id){
