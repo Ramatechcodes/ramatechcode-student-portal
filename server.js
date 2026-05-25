@@ -540,6 +540,31 @@ success:false
 }
 
 });
+app.post("/delete-assignment", verifyAdmin, async(req,res)=>{
+
+try{
+
+const { id } = req.body;
+
+await db.collection("assignments")
+.doc(id)
+.delete();
+
+res.json({
+success:true
+});
+
+}catch(err){
+
+console.log(err);
+
+res.json({
+success:false
+});
+
+}
+
+});
 app.get("/assignments", async(req,res)=>{
 
 const snapshot =
@@ -549,7 +574,10 @@ let assignments = [];
 
 snapshot.forEach(doc=>{
 
-assignments.push(doc.data());
+assignments.push({
+id: doc.id,
+...doc.data()
+});
 
 });
 
