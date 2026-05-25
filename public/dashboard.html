@@ -138,37 +138,34 @@ select{
     <div id="profile"></div>
 
 </div>
-
 <div class="card">
 
-    <h2>Tech Course Payment</h2>
+<h2>Join Class WhatsApp Group</h2>
 
-    <p>Total Course Fee: ₦350,000</p>
+<select id="groupSelect">
 
-    <select id="paymentPlan">
+<option value="">
+Select Your Tech Career
+</option>
 
-        <option value="350000|100%">
-            100% - ₦350,000
-        </option>
+<option value="https://chat.whatsapp.com/GVG5MbfaIgPKJVS6lxbrRl">
+Full Stack Development
+</option>
 
-        <option value="210000|60%">
-            60% - ₦210,000
-        </option>
+<option value="https://chat.whatsapp.com/C4ueKEgwPGFFunKI1M688P">
+Robotics & AI
+</option>
 
-        <option value="140000|40%">
-            40% - ₦140,000
-        </option>
+<option value="https://chat.whatsapp.com/BlTbdSMaItRIgT82Pf62pC">
+Python Programming
+</option>
 
-    </select>
+</select>
 
-    <button onclick="payCourse()">
-        Pay For Tech Course
-    </button>
-
-    <button onclick="viewHistory()">
-  View Payment History
+<button onclick="joinGroup()">
+Join WhatsApp Group
 </button>
-<div id="paymentHistory"></div>
+
 </div>
 
 <div class="card">
@@ -264,70 +261,20 @@ ID Card Approved - Ready To Print
 loadStudent();
 
 
-async function payCourse(){
+function joinGroup(){
 
-    const paymentData =
-    document.getElementById("paymentPlan").value;
+const link =
+document.getElementById("groupSelect").value;
 
-    const splitData = paymentData.split("|");
+if(!link){
 
-    const amount = splitData[0];
+alert("Select a class");
 
-    const percentage = splitData[1];
-
-    const response = await fetch("/pay-course",{
-
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
-
-      body:JSON.stringify({
-
-        studentId:student.studentId,
-        amount:Number(amount),
-        percentage
-
-      })
-
-    });
-
-    const data = await response.json();
-
-    if(data.success){
-
-      window.location.href = data.link;
-
-    }else{
-
-      alert("Payment Failed");
-
-    }
+return;
 
 }
-function viewHistory(){
 
-  let history = `
-    Registration Fee:
-    ${student.paymentStatus}
-  `;
-
-  if(student.coursePayment){
-
-    history += `
-
-    Course Payment:
-    ₦${Number(
-      student.coursePayment.amount
-    ).toLocaleString()}
-
-    Status:
-    ${student.coursePayment.status}
-    `;
-  }
-
-  alert(history);
+window.open(link,"_blank");
 
 }
 async function applyId(){
