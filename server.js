@@ -438,6 +438,40 @@ app.get("/students", async(req,res)=>{
 
 });
 
+app.post("/update-class-link", async(req,res)=>{
+
+try{
+
+const { link } = req.body;
+
+await db.collection("settings")
+.doc("classroom")
+.set({
+liveClassLink: link
+});
+
+res.json({
+success:true
+});
+
+}catch(err){
+
+res.json({
+success:false
+});
+
+}
+
+});
+app.get("/class-link", async(req,res)=>{
+
+const doc = await db.collection("settings")
+.doc("classroom")
+.get();
+
+res.json(doc.data());
+
+});
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, ()=>{
