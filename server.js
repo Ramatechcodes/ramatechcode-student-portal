@@ -60,18 +60,19 @@ app.post("/register", async (req, res) => {
     // MARK AS PORTAL STUDENT
     data.portalStudent = true;
 
-    // CHECK EXISTING EMAIL
-    const emailCheck = await db.collection("students")
-    .where("email","==",data.email)
-    .limit(1)
-    .get();
+ // CHECK EXISTING PORTAL EMAIL
+const emailCheck = await db.collection("students")
+.where("email","==",data.email)
+.where("portalStudent","==",true)
+.limit(1)
+.get();
 
-    // CHECK EXISTING PHONE
-    const phoneCheck = await db.collection("students")
-    .where("phone","==",data.phone)
-    .limit(1)
-    .get();
-
+// CHECK EXISTING PORTAL PHONE
+const phoneCheck = await db.collection("students")
+.where("phone","==",data.phone)
+.where("portalStudent","==",true)
+.limit(1)
+.get();
     if(!emailCheck.empty || !phoneCheck.empty){
 
       return res.json({
