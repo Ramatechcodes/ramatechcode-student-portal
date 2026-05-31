@@ -477,18 +477,25 @@ const snapshot =
 await db.collection("students").get();
 
 let uniqueStudents = [];
+
 let usedEmails = [];
 let usedPhones = [];
+
+let count = 1;
 
 snapshot.forEach(doc=>{
 
 const data = doc.data();
 
 const email =
-(data.email || "").trim().toLowerCase();
+(data.email || "")
+.trim()
+.toLowerCase();
 
 const phone =
-(data.phone || "").replace(/\s/g,"");
+(data.phone || "")
+.replace(/\s/g,"")
+.replace(/\+/g,"");
 
 if(
 !usedEmails.includes(email) &&
@@ -499,8 +506,55 @@ usedEmails.push(email);
 usedPhones.push(phone);
 
 uniqueStudents.push({
+
 id: doc.id,
-...data
+
+number: count++,
+
+fullName:
+data.fullName ||
+data.fullname ||
+"No Name",
+
+studentId:
+data.studentId ||
+"N/A",
+
+email:
+data.email ||
+"N/A",
+
+phone:
+data.phone ||
+"N/A",
+
+gender:
+data.gender ||
+"N/A",
+
+career:
+data.career ||
+data.interest ||
+"N/A",
+
+classType:
+data.classType ||
+data.classOption ||
+"N/A",
+
+address:
+data.address ||
+"N/A",
+
+paymentStatus:
+data.paymentStatus === "paid"
+? "paid"
+: "pending",
+
+idCardStatus:
+data.idCardStatus ||
+"Not Applied"
+
 });
 
 }
