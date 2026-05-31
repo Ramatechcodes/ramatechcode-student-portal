@@ -57,27 +57,52 @@ app.post("/register", async (req, res) => {
 
     const data = req.body;
 
+    // CHECK EXISTING EMAIL
+    const emailCheck = await db.collection("students")
+      .where("email", "==", data.email)
+      .limit(1)
+      .get();
+
+    // CHECK EXISTING PHONE
+    const phoneCheck = await db.collection("students")
+      .where("phone", "==", data.phone)
+      .limit(1)
+      .get();
+
+    // IF USER EXISTS
+    if (!emailCheck.empty || !phoneCheck.empty) {
+
+      return res.json({
+        success: false,
+        message: "Student already registered"
+      });
+
+    }
+
+    // GENERATE STUDENT ID
     const snapshot = await db.collection("students").get();
 
-    const studentId = generateStudentId(snapshot.size + 1);
+    const studentId =
+      generateStudentId(snapshot.size + 1);
 
-    // CREATE TX REF
+    // PAYMENT TX REF
     const tx_ref = "RAM-" + Date.now();
 
-    // SAVE EVERYTHING
+    // SAVE DATA
     data.studentId = studentId;
     data.tx_ref = tx_ref;
     data.paymentStatus = "pending";
+    data.idCardStatus = "Not Applied";
     data.createdAt = Date.now();
 
     // SAVE TO FIREBASE
     await db.collection("students").add(data);
 
-    // FLUTTERWAVE PAYMENT
+    // CREATE PAYMENT
     const payment = await axios.post(
       "https://api.flutterwave.com/v3/payments",
       {
-        tx_ref: tx_ref,
+        tx_ref,
         amount: 10000,
         currency: "NGN",
 
@@ -96,7 +121,8 @@ app.post("/register", async (req, res) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
+          Authorization:
+            `Bearer ${process.env.FLW_SECRET_KEY}`
         }
       }
     );
