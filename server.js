@@ -476,15 +476,29 @@ try{
 const snapshot =
 await db.collection("students").get();
 
-let students = [];
+let uniqueStudents = [];
+let usedEmails = [];
+let usedPhones = [];
 
 snapshot.forEach(doc=>{
 
 const data = doc.data();
 
-if(data.studentId){
+const email =
+(data.email || "").trim().toLowerCase();
 
-students.push({
+const phone =
+(data.phone || "").replace(/\s/g,"");
+
+if(
+!usedEmails.includes(email) &&
+!usedPhones.includes(phone)
+){
+
+usedEmails.push(email);
+usedPhones.push(phone);
+
+uniqueStudents.push({
 id: doc.id,
 ...data
 });
@@ -493,15 +507,59 @@ id: doc.id,
 
 });
 
-res.json(students);
+res.json(uniqueStudents);
 
 }catch(error){
+
+console.log(error);
 
 res.json({
 success:false
 });
 
 }
+
+});
+
+app.get("/clean-duplicates", async(req,res)=>{
+
+const snapshot =
+await db.collection("students").get();
+
+let usedEmails = [];
+let usedPhones = [];
+
+for(const doc of snapshot.docs){
+
+const data = doc.data();
+
+const email =
+(data.email || "").trim().toLowerCase();
+
+const phone =
+(data.phone || "").replace(/\s/g,"");
+
+if(
+usedEmails.includes(email) ||
+usedPhones.includes(phone)
+){
+
+await db.collection("students")
+.doc(doc.id)
+.delete();
+
+console.log("Deleted duplicate:", email);
+
+}else{
+
+usedEmails.push(email);
+usedPhones.push(phone);
+
+}
+
+}
+
+res.send("Duplicates cleaned");
 
 });
 
