@@ -506,8 +506,9 @@ app.get("/students", verifyAdmin, async(req,res)=>{
 
 try{
 
-const snapshot = await db.collection("students")
-.where("portalStudent","==",true)
+const snapshot =
+await db.collection("students")
+.orderBy("createdAt","desc")
 .get();
 
 let students = [];
@@ -525,34 +526,48 @@ id: doc.id,
 number: count++,
 
 fullName:
-data.fullName || "No Name",
+data.fullName ||
+data.fullname ||
+"No Name",
 
 studentId:
-data.studentId || "N/A",
+data.studentId ||
+"N/A",
 
 email:
-data.email || "N/A",
+data.email ||
+"N/A",
 
 phone:
-data.phone || "N/A",
+data.phone ||
+"N/A",
 
 gender:
-data.gender || "N/A",
+data.gender ||
+"N/A",
 
 career:
-data.career || "N/A",
+data.career ||
+data.interest ||
+"N/A",
 
 classType:
-data.classType || "N/A",
+data.classType ||
+data.classOption ||
+"N/A",
 
 address:
-data.address || "N/A",
+data.address ||
+"N/A",
 
 paymentStatus:
-data.paymentStatus || "pending",
+data.paymentStatus === "paid"
+? "paid"
+: "pending",
 
 idCardStatus:
-data.idCardStatus || "Not Applied"
+data.idCardStatus ||
+"Not Applied"
 
 });
 
@@ -571,7 +586,6 @@ success:false
 }
 
 });
-
 app.get("/clean-duplicates", async(req,res)=>{
 
 const snapshot =
