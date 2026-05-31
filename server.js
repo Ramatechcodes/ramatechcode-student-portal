@@ -638,7 +638,7 @@ const { link } = req.body;
 await db.collection("settings")
 .doc("classroom")
 .set({
-liveClassLink: link
+liveClassLink: link ? link.trim() : ""
 });
 
 res.json({
@@ -646,6 +646,8 @@ success:true
 });
 
 }catch(err){
+
+console.log(err);
 
 res.json({
 success:false
@@ -656,11 +658,34 @@ success:false
 });
 app.get("/class-link", async(req,res)=>{
 
+try{
+
 const doc = await db.collection("settings")
 .doc("classroom")
 .get();
 
-res.json(doc.data());
+if(!doc.exists){
+
+return res.json({
+liveClassLink:""
+});
+
+}
+
+const data = doc.data();
+
+res.json({
+liveClassLink:
+data.liveClassLink || ""
+});
+
+}catch(err){
+
+res.json({
+liveClassLink:""
+});
+
+}
 
 });
 app.post("/add-assignment", verifyAdmin, async(req,res)=>{
