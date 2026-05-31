@@ -670,11 +670,14 @@ const res = await fetch("/class-link");
 
 const data = await res.json();
 
-if(data.liveClassLink){
+const liveClass =
+(data.liveClassLink || "").trim();
+
+if(liveClass){
 
 document.getElementById("liveClass").innerHTML = `
 
-<a href="${data.liveClassLink}" target="_blank">
+<a href="${liveClass}" target="_blank">
 
 <button>
 Join Live Class
@@ -684,10 +687,19 @@ Join Live Class
 
 `;
 
-}
+}else{
+
+document.getElementById("liveClass").innerHTML = `
+
+<div class="status pending">
+No Live Class Available
+</div>
+
+`;
 
 }
 
+}
 loadClassLink();
 </script>
 
