@@ -159,46 +159,83 @@ async function loadStudents(search=""){
 
     });
 
-    filtered.forEach(student=>{
+   filtered.forEach(student=>{
 
-        html += `
+html += `
 
-        <div class="student">
+<div class="student">
 
-            <h2>${student.fullName || student.fullname || "No Name"}</h2>
+<h2>
+${student.number}. 
+${student.fullName}
+</h2>
 
-            <p><b>Student ID:</b>
-            ${student.studentId || "N/A"}</p>
+<p><b>Student ID:</b>
+${student.studentId}</p>
 
-            <p><b>Email:</b>
-            ${student.email || "N/A"}</p>
+<p><b>Email:</b>
+${student.email}</p>
 
-            <p><b>Phone:</b>
-            ${student.phone || "N/A"}</p>
+<p><b>Phone:</b>
+${student.phone}</p>
 
-            <p><b>Gender:</b>
-            ${student.gender || "N/A"}</p>
+<p><b>Gender:</b>
+${student.gender}</p>
 
-            <p><b>Career:</b>
-            ${student.career || student.interest || "N/A"}</p>
+<p><b>Career:</b>
+${student.career}</p>
 
-            <p><b>Class Type:</b>
-            ${student.classType || student.classOption || "N/A"}</p>
+<p><b>Class Type:</b>
+${student.classType}</p>
 
-            <p><b>Address:</b>
-            ${student.address || "N/A"}</p>
+<p><b>Address:</b>
+${student.address}</p>
 
-            <p><b>Payment:</b>
-            ${student.paymentStatus || "pending"}</p>
+<p>
+<b>Payment:</b>
 
-            <p><b>ID Card:</b>
-            ${student.idCardStatus || "Not Applied"}</p>
+<span style="
+color:
+${student.paymentStatus === "paid"
+? "lime"
+: "orange"};
+font-weight:bold;
+">
 
-            ${
+${student.paymentStatus}
+
+</span>
+
+</p>
+
+<p>
+<b>ID Card:</b>
+
+<span style="
+color:
+${student.idCardStatus === "approved"
+? "lime"
+: "orange"};
+font-weight:bold;
+">
+
+${student.idCardStatus}
+
+</span>
+
+</p>
+
+${
 student.idCardStatus === "approved"
+
 ?
-`<button disabled>Approved</button>`
+
+`<button disabled>
+Approved
+</button>`
+
 :
+
 `<button onclick="approve('${student.id}')">
 Approve ID Card
 </button>`
@@ -206,16 +243,20 @@ Approve ID Card
 
 <button
 onclick="deleteStudent('${student.id}')"
-style="background:red;color:white;margin-left:10px;"
+style="
+background:red;
+color:white;
+margin-left:10px;
+"
 >
 Delete
 </button>
 
-        </div>
+</div>
 
-        `;
+`;
 
-    });
+});
 
     document.getElementById("students").innerHTML = html;
 
