@@ -220,7 +220,36 @@ if(tx_ref.startsWith("COURSE-")){
 });
 
 
-    res.send("Payment successful");
+  res.send(`
+
+<h1 style="
+font-family:Arial;
+text-align:center;
+margin-top:100px;
+color:green;
+">
+Payment Successful
+</h1>
+
+<h2 style="
+font-family:Arial;
+text-align:center;
+color:gold;
+">
+Your Student ID:
+${student.studentId}
+</h2>
+
+<p style="
+text-align:center;
+font-size:20px;
+font-family:Arial;
+">
+Save your Student ID to login.
+</p>
+
+`);
+
 
   } catch (err) {
     console.log(err);
