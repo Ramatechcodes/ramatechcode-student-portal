@@ -57,89 +57,93 @@ app.post("/register", async (req, res) => {
 
     const data = req.body;
 
+    // MARK AS PORTAL STUDENT
+    data.portalStudent = true;
+
     // CHECK EXISTING EMAIL
     const emailCheck = await db.collection("students")
-      .where("email", "==", data.email)
-      .limit(1)
-      .get();
+    .where("email","==",data.email)
+    .limit(1)
+    .get();
 
     // CHECK EXISTING PHONE
     const phoneCheck = await db.collection("students")
-      .where("phone", "==", data.phone)
-      .limit(1)
-      .get();
+    .where("phone","==",data.phone)
+    .limit(1)
+    .get();
 
-    // IF USER EXISTS
-    if (!emailCheck.empty || !phoneCheck.empty) {
+    if(!emailCheck.empty || !phoneCheck.empty){
 
       return res.json({
-        success: false,
-        message: "Student already registered"
+        success:false,
+        message:"Student already registered"
       });
 
     }
 
     // GENERATE STUDENT ID
-    const snapshot = await db.collection("students").get();
+    const snapshot = await db.collection("students")
+    .where("portalStudent","==",true)
+    .get();
 
     const studentId =
-      generateStudentId(snapshot.size + 1);
+    generateStudentId(snapshot.size + 1);
 
-    // PAYMENT TX REF
+    // PAYMENT REF
     const tx_ref = "RAM-" + Date.now();
 
-    // SAVE DATA
+    // SAVE
     data.studentId = studentId;
     data.tx_ref = tx_ref;
     data.paymentStatus = "pending";
     data.idCardStatus = "Not Applied";
     data.createdAt = Date.now();
 
-    // SAVE TO FIREBASE
     await db.collection("students").add(data);
 
-    // CREATE PAYMENT
+    // PAYMENT
     const payment = await axios.post(
       "https://api.flutterwave.com/v3/payments",
       {
         tx_ref,
-        amount: 10000,
-        currency: "NGN",
+        amount:10000,
+        currency:"NGN",
 
         redirect_url:
-          "https://ramatechcode-student-portal.onrender.com/payment-success",
+        "https://ramatechcode-student-portal.onrender.com/payment-success",
 
-        customer: {
-          email: data.email,
-          name: data.fullName
+        customer:{
+          email:data.email,
+          name:data.fullName
         },
 
-        customizations: {
-          title: "Ramatechcode Registration",
-          description: "Student Registration Payment"
+        customizations:{
+          title:"Ramatechcode Registration",
+          description:"Student Registration Payment"
         }
+
       },
       {
-        headers: {
+        headers:{
           Authorization:
-            `Bearer ${process.env.FLW_SECRET_KEY}`
+          `Bearer ${process.env.FLW_SECRET_KEY}`
         }
       }
     );
 
     res.json({
-      success: true,
-      paymentLink: payment.data.data.link,
+      success:true,
+      paymentLink:payment.data.data.link,
       studentId
     });
 
-  } catch (error) {
+  } catch(err){
 
-    console.log(error);
+    console.log(err);
 
     res.json({
-      success: false,
-      message: error.message
+      success:false,
+      message:err.message
     });
 
   }
@@ -473,13 +477,11 @@ app.get("/students", verifyAdmin, async(req,res)=>{
 
 try{
 
-const snapshot =
-await db.collection("students").get();
+const snapshot = await db.collection("students")
+.where("portalStudent","==",true)
+.get();
 
-let uniqueStudents = [];
-
-let usedEmails = [];
-let usedPhones = [];
+let students = [];
 
 let count = 1;
 
@@ -487,85 +489,51 @@ snapshot.forEach(doc=>{
 
 const data = doc.data();
 
-const email =
-(data.email || "")
-.trim()
-.toLowerCase();
-
-const phone =
-(data.phone || "")
-.replace(/\s/g,"")
-.replace(/\+/g,"");
-
-if(
-!usedEmails.includes(email) &&
-!usedPhones.includes(phone)
-){
-
-usedEmails.push(email);
-usedPhones.push(phone);
-
-uniqueStudents.push({
+students.push({
 
 id: doc.id,
 
 number: count++,
 
 fullName:
-data.fullName ||
-data.fullname ||
-"No Name",
+data.fullName || "No Name",
 
 studentId:
-data.studentId ||
-"N/A",
+data.studentId || "N/A",
 
 email:
-data.email ||
-"N/A",
+data.email || "N/A",
 
 phone:
-data.phone ||
-"N/A",
+data.phone || "N/A",
 
 gender:
-data.gender ||
-"N/A",
+data.gender || "N/A",
 
 career:
-data.career ||
-data.interest ||
-"N/A",
+data.career || "N/A",
 
 classType:
-data.classType ||
-data.classOption ||
-"N/A",
+data.classType || "N/A",
 
 address:
-data.address ||
-"N/A",
+data.address || "N/A",
 
 paymentStatus:
-data.paymentStatus === "paid"
-? "paid"
-: "pending",
+data.paymentStatus || "pending",
 
 idCardStatus:
-data.idCardStatus ||
-"Not Applied"
+data.idCardStatus || "Not Applied"
 
 });
 
-}
-
 });
 
-res.json(uniqueStudents);
+res.json(students);
 
-}catch(error){
+}catch(err){
 
-console.log(error);
+console.log(err);
 
 res.json({
 success:false
