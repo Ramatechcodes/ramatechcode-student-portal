@@ -107,7 +107,7 @@ const phoneCheck = await db.collection("students")
       "https://api.flutterwave.com/v3/payments",
       {
         tx_ref,
-        amount:10000,
+        amount:2500,
         currency:"NGN",
 
         redirect_url:
